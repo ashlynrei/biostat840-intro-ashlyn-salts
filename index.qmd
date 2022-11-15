@@ -1,0 +1,11 @@
+---
+title: "Welcome!"
+---
+
+Hello!
+
+My name is Ashlyn Salts. I am a 2nd-year MHS student on the General Epidemiological Methods track in the department of Epidemiology. I love skiing and traveling! 
+
+This is a picture of me and my dad skiing in Whistler-Blackcomb last year!
+
+![](https://scontent-iad3-2.xx.fbcdn.net/v/t1.6435-9/83162595_2485446531667988_6217168811129307136_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=84a396&_nc_ohc=cdDN3GHSOP8AX9buEPC&_nc_ht=scontent-iad3-2.xx&oh=00_AfAKoc-SiBimlSO3M41j46zFSi2BRpN_RyOq8sfqQFw-Qg&oe=639A40BA)

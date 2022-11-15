@@ -1,0 +1,142 @@
+---
+title: "Example Analysis"
+format: html
+editor: visual
+project:
+  type: website
+  output-dir: docs
+---
+
+## Background
+
+### Research Question
+
+What country produces the best ski racers for men and women?
+
+### Intended Audience
+
+This analysis is designed to help coaches and athletes determine which countries have the best racers to see if coaching practices from the best countries can be implemented in their country with their athletes. 
+
+## Data
+
+This data is from the `SpeedSki` dataset that is in the `GDAdata` package that is available on CRAN. The data is originally from the FIS website. 
+
+![](https://upload.wikimedia.org/wikipedia/en/thumb/0/07/F%C3%A9d%C3%A9ration_internationale_de_ski_%28logo%29.svg/1200px-F%C3%A9d%C3%A9ration_internationale_de_ski_%28logo%29.svg.png)
+
+
+http://www.fis-ski.com/de/606/612.html?sector=SS&raceid=262 (men) and http://www.fis-ski.com/de/606/612.html?sector=SS&raceid=263 (women).
+
+::: {.column-margin}
+FIS is the *Fédération internationale de ski et de snowboard*
+:::
+
+There are 91 observations on 8 variables.
+
+### Data dictionary
+- `Rank` finishing position by sex
+- `Bib` Start number
+- `FIS.code` Skier's international skiing ID number
+- `Name` Skier's name
+- `Year` Skier's year of birth
+- `Nation` Skier's nationality
+- `Speed` Speed achieved in km/hr
+- `Sex` Male or female
+- `Event` event type with 3 levels: speed downhill, speed downhill junior, speed one
+- `no.of.runs` Number of runs
+
+::: {.callout-note appearance="simple"}
+
+## Fun fact!
+
+The first World Cup Ski race was held on January 5, 1967 in Berchtesgaeden, West Germany.
+
+:::
+
+
+## Exploratory Analysis
+```{r}
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(GDAdata)
+data(SpeedSki)
+
+d <- select(SpeedSki, -(FIS.Code))
+
+d %>% group_by(Sex) %>%
+  summarize(count = n())
+
+sp <- d %>% group_by(Nation) %>%
+  summarize(mean_speed = mean(Speed)) %>%
+  arrange(desc(mean_speed))
+sp
+
+ra <- d %>% group_by(Nation) %>%
+  summarize(mean_rank = mean(Rank)) %>%
+  arrange(desc(mean_rank))
+ra
+ok <- d %>% group_by(Nation) %>%
+  summarize(mean_rank = mean(Rank), mean_speed = mean(Speed))
+
+ok
+
+#number of athletes from each country
+total <- d %>% group_by(Nation, Sex) %>%
+  summarize(count = n())
+total
+```
+
+## Brief Analysis
+```{r}
+#| warning: false
+#| message: false
+#Number of athletes from each country
+
+ggplot(total, aes(x = Nation, y = count)) +
+  geom_bar(color = "skyblue",fill = "skyblue", stat = "identity") +
+  labs(title = "Number of Athletes from Each Country", x = "Country", y = "Number of Athletes") +
+  theme_bw()
+
+#Start position vs Place
+
+ggplot(d, aes(x = Bib, y = Rank)) +
+  geom_point(color = "skyblue") +
+  xlim(0,100) +
+  labs(title = "Start Position versus Rank", x = "Start position", y = "Rank") +
+  theme_bw() +
+  facet_wrap(~Sex)
+
+#Speed vs Rank by country
+
+ggplot(ok, aes(x = mean_rank, y = mean_speed, group = Nation)) +
+  geom_point() +
+  geom_label(aes(label = Nation), nudge_y = 0.7) +
+  labs(title = "Rank versus Speed by Country", x = "Mean Rank", y = "Mean Speed (km/hr)") +
+  theme_bw()
+```
+
+::: {.callout-note appearance="simple"}
+
+## Note
+
+Speed is in _kilometers_ per hour, not miles per hour as commonly seen in the US.
+
+:::
+
+## Summary
+
+Overall, France has the most athletes competing while the United States and Belgium have the fewest athletes per country. 
+
+One would expect to see a positive relationship between start position and rank after the race because athletes with earlier start positions have a course that less people have skied on, and typically have better conditions for their race. Interestingly, there does not appear to be a clear pattern between the two variables among men and women. 
+
+There appears to be a negative relationship between average rank and average speed for each country. This makes sense because a higher speed would indicate a better and lower rank. Overall, USA and Poland produced the best athletes. Coaches and athletes should look to these countries for training advice and expertise. 
+
+## Functions used
+
+- `dplyr`: `group_by`, `summarize`, `arrange`, `select`, `desc`
+- `ggplot2`: `geom_bar`, `geom_point`, `geom_label`
+
+## References
+::: {#refs}
+:::
